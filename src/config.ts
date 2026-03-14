@@ -6,11 +6,11 @@ type DBConfig = {
   dbUrl: string;
   schemaPath: string;
   migrationConfig: MigrationConfig;
-}
+};
 
 type APIConfig = {
-  port: number,
-  dbConfig: DBConfig
+  port: number;
+  dbConfig: DBConfig;
 };
 
 export const apiConfig: APIConfig = {
@@ -19,7 +19,7 @@ export const apiConfig: APIConfig = {
     dbUrl: process.env.DB_URL as string,
     schemaPath: process.env.SCHEMA_Path as string,
     migrationConfig: {
-      migrationsFolder: process.env.MIGRATION_FOLDER as string
-    }
+      migrationsFolder: process.env.MIGRATION_FOLDER as string,
+    },
   },
-}
+};
