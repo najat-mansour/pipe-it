@@ -6,22 +6,34 @@ import { isStrongPassword } from "../utils/password-strength-checker.js";
 import { makeJWT } from "../utils/jwt.js";
 import { apiConfig } from "../config.js";
 
+async function checkUsernameAndEmailUniqueness(username?: string, email?: string): Promise<void> {
+  if (username) {
+    const existedUserByUsername = await getUserByUsernameDB(username);
+    if (existedUserByUsername) {
+      throw new BadRequestError("Username is already existed!");
+    }
+  }
+
+  if (email) {
+    const existedUserByEmail = await getUserByEmailDB(email);
+    if (existedUserByEmail) {
+      throw new BadRequestError("Email is already existed!");
+    }
+  }
+}
+
+async function checkPasswordStrengthAndHashIt(password?: string): Promise<string | undefined> {
+  if (password) {
+    if (!isStrongPassword(password)) {
+      throw new BadRequestError("Weak Password!");
+    }
+    return await hashPassword(password);
+  }
+}
+
 export async function createUser(user: NewUser): Promise<UserWithoutPassword> {
-  const existedUserByUsername = await getUserByUsernameDB(user.username);
-  if (existedUserByUsername) {
-    throw new BadRequestError("Username is already existed!");
-  }
-
-  const existedUserByEmail = await getUserByEmailDB(user.email);
-  if (existedUserByEmail) {
-    throw new BadRequestError("Email is already existed!");
-  }
-
-  if (!isStrongPassword(user.password)) {
-    throw new BadRequestError("Weak Password!");
-  }
-
-  user.password = await hashPassword(user.password);
+  checkUsernameAndEmailUniqueness(user.username, user.email);
+  user.password = await checkPasswordStrengthAndHashIt(user.password) as string;
   const createdUser = await createUserDB(user);
   return {
     id: createdUser.id,
@@ -104,10 +116,12 @@ export async function deleteUser(id: string): Promise<void> {
 }   
 
 export async function updateUser(id: string, user: UpdateUser): Promise<UserWithoutPassword> {
-  const existedUser = await getUserById(id);
-  if (!existedUser) {
+  const existedUserById = await getUserById(id);
+  if (!existedUserById) {
     throw new BadRequestError("User not found!");
   }
+  checkUsernameAndEmailUniqueness(user.username, user.email);
+  user.password = await checkPasswordStrengthAndHashIt(user.password) as string;
   const updatedUser = await updateUserDB(id, user);
   return updatedUser;
 }
