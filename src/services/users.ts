@@ -6,17 +6,17 @@ import { isStrongPassword } from "../utils/password-strength-checker.js";
 import { makeJWT } from "../utils/jwt.js";
 import { apiConfig } from "../config.js";
 
-async function checkUsernameAndEmailUniqueness(username?: string, email?: string): Promise<void> {
+async function checkUsernameAndEmailUniqueness(username?: string, email?: string, userId?: string): Promise<void> {
   if (username) {
     const existedUserByUsername = await getUserByUsernameDB(username);
-    if (existedUserByUsername) {
+    if (existedUserByUsername && existedUserByUsername.id !== userId) {
       throw new BadRequestError("Username is already existed!");
     }
   }
 
   if (email) {
     const existedUserByEmail = await getUserByEmailDB(email);
-    if (existedUserByEmail) {
+    if (existedUserByEmail && existedUserByEmail.id !== userId) {
       throw new BadRequestError("Email is already existed!");
     }
   }
@@ -120,8 +120,16 @@ export async function updateUser(id: string, user: UpdateUser): Promise<UserWith
   if (!existedUserById) {
     throw new BadRequestError("User not found!");
   }
-  checkUsernameAndEmailUniqueness(user.username, user.email);
+  checkUsernameAndEmailUniqueness(user.username, user.email, id);
   user.password = await checkPasswordStrengthAndHashIt(user.password) as string;
   const updatedUser = await updateUserDB(id, user);
-  return updatedUser;
+  return {
+    id: updatedUser.id,
+    firstName: updatedUser.firstName,
+    lastName: updatedUser.lastName,
+    username: updatedUser.username,
+    email: updatedUser.email,
+    createdAt: updatedUser.createdAt,
+    updatedAt: updatedUser.updatedAt
+  };
 }
