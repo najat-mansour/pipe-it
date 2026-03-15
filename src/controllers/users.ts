@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from "express";
-import { createUser, deleteUser, getAllUsers, getUserById, login } from "../services/users.js";
+import { createUser, deleteUser, getAllUsers, getUserById, login, updateUser } from "../services/users.js";
 import { getBearerToken, validateJWT } from "../utils/jwt.js";
 import { apiConfig } from "../config.js";
 
 export async function createUserHandler(req: Request, res: Response, next: NextFunction) {
   try {
     const newUser = req.body;
-    const user = await createUser(newUser);
-    res.status(201).json(user);
+    const createdUser = await createUser(newUser);
+    res.status(201).json(createdUser);
 
   } catch (err: unknown) {
     next(err);
@@ -61,4 +61,18 @@ export async function deleteUserHandler(req: Request, res: Response, next: NextF
     next(err); 
 
   } 
+}
+
+export async function updateUserHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const token = getBearerToken(req);
+    const userId = validateJWT(token, apiConfig.jwtConfig.secretKey);
+    const userInfo = req.body;
+    const updatedUser = await updateUser(userId, userInfo);
+    res.status(200).json(updatedUser);
+
+  } catch(err: unknown) {
+    next(err);
+
+  }
 }

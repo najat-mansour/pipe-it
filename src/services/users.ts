@@ -1,11 +1,10 @@
-import { LoggedInUser, NewUser, UserWithoutPassword } from "../db/schema.js";
-import { createUserDB, deleteUserDB, getAllUsersDB, getUserByEmailDB, getUserByIdDB, getUserByUsernameDB } from "../db/queries/users.js";
+import { LoggedInUser, NewUser, UpdateUser, UserWithoutPassword } from "../db/schema.js";
+import { createUserDB, deleteUserDB, getAllUsersDB, getUserByEmailDB, getUserByIdDB, getUserByUsernameDB, updateUserDB } from "../db/queries/users.js";
 import { checkPasswordHash, hashPassword } from "../utils/encryption.js";
 import { BadRequestError, UnAuthorizedError } from "../errors/http-errors.js";
 import { isStrongPassword } from "../utils/password-strength-checker.js";
 import { makeJWT } from "../utils/jwt.js";
 import { apiConfig } from "../config.js";
-import e from "express";
 
 export async function createUser(user: NewUser): Promise<UserWithoutPassword> {
   const existedUserByUsername = await getUserByUsernameDB(user.username);
@@ -59,11 +58,11 @@ export async function login(username: string, password: string): Promise<LoggedI
 }
 
 export async function getUserById(id: string): Promise<UserWithoutPassword> {
-  if(id.length !== 36 ){
+  if(id.length !== 36) {
     throw new BadRequestError("Invalid user ID!");
   }
   const existedUser = await getUserByIdDB(id);
-  if ( !existedUser) {
+  if(!existedUser) {
     throw new BadRequestError("User not found!");
   }     
   return {
@@ -103,3 +102,12 @@ export async function deleteUser(id: string): Promise<void> {
   } 
   await deleteUserDB(id);
 }   
+
+export async function updateUser(id: string, user: UpdateUser): Promise<UserWithoutPassword> {
+  const existedUser = await getUserById(id);
+  if (!existedUser) {
+    throw new BadRequestError("User not found!");
+  }
+  const updatedUser = await updateUserDB(id, user);
+  return updatedUser;
+}

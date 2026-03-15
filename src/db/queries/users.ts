@@ -1,6 +1,5 @@
-import e from "express";
 import { db } from "../index.js";
-import { NewUser, User, users } from "../schema.js";
+import { NewUser, UpdateUser, User, users } from "../schema.js";
 import { eq } from "drizzle-orm";
 
 export async function createUserDB(user: NewUser): Promise<User> {
@@ -30,4 +29,9 @@ export async function getAllUsersDB(): Promise<User[]> {
 
 export async function deleteUserDB(id: string): Promise<void> {
   await db.delete(users).where(eq(users.id, id)); 
+}
+
+export async function updateUserDB(id: string, user: UpdateUser): Promise<User> {
+  const [result] = await db.update(users).set(user).where(eq(users.id, id)).returning();
+  return result;
 }
