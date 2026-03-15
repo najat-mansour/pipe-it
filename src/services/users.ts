@@ -1,10 +1,11 @@
 import { LoggedInUser, NewUser, UserWithoutPassword } from "../db/schema.js";
-import { createUserDB, getUserByEmailDB, getUserByUsernameDB } from "../db/queries/users.js";
+import { createUserDB, deleteUserDB, getAllUsersDB, getUserByEmailDB, getUserByIdDB, getUserByUsernameDB } from "../db/queries/users.js";
 import { checkPasswordHash, hashPassword } from "../utils/encryption.js";
 import { BadRequestError, UnAuthorizedError } from "../errors/http-errors.js";
 import { isStrongPassword } from "../utils/password-strength-checker.js";
 import { makeJWT } from "../utils/jwt.js";
 import { apiConfig } from "../config.js";
+import e from "express";
 
 export async function createUser(user: NewUser): Promise<UserWithoutPassword> {
   const existedUserByUsername = await getUserByUsernameDB(user.username);
@@ -41,7 +42,7 @@ export async function login(username: string, password: string): Promise<LoggedI
   }
 
   if (!await checkPasswordHash(existedUser.password, password)) {
-    throw new UnAuthorizedError("Invalid password!");
+    throw new UnAuthorizedError("Wrong password!");
   } 
 
   const token = makeJWT(existedUser.id, apiConfig.jwtConfig.expiredIn, apiConfig.jwtConfig.secretKey);
@@ -56,3 +57,49 @@ export async function login(username: string, password: string): Promise<LoggedI
     updatedAt: existedUser.updatedAt
   }
 }
+
+export async function getUserById(id: string): Promise<UserWithoutPassword> {
+  if(id.length !== 36 ){
+    throw new BadRequestError("Invalid user ID!");
+  }
+  const existedUser = await getUserByIdDB(id);
+  if ( !existedUser) {
+    throw new BadRequestError("User not found!");
+  }     
+  return {
+    id: existedUser.id,
+    firstName: existedUser.firstName,
+    lastName: existedUser.lastName,
+    username: existedUser.username,
+    email: existedUser.email,
+    createdAt: existedUser.createdAt,
+    updatedAt: existedUser.updatedAt
+  }
+} 
+
+export async function getAllUsers(): Promise<UserWithoutPassword[]> {
+  const users = await getAllUsersDB();
+  if (users.length === 0) {
+    throw new BadRequestError("No users found!");
+  }
+  return users.map((user) => ({
+    id: user.id,
+    firstName: user.firstName,
+    lastName: user.lastName,
+    username: user.username,
+    email: user.email,
+    createdAt: user.createdAt,
+    updatedAt: user.updatedAt
+  }));
+}
+
+export async function deleteUser(id: string): Promise<void> {
+  if(id.length !== 36) {
+    throw new BadRequestError("Invalid user ID!");
+  }  
+  const existedUser = await getUserByIdDB(id);
+  if ( !existedUser) {
+    throw new BadRequestError("User not found!");
+  } 
+  await deleteUserDB(id);
+}   
