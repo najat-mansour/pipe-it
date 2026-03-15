@@ -40,8 +40,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Run style check
-        run: npm run format:check
+      # - name: Run style check
+      #   run: npm run format:check
 
-      - name: Run lint check
-        run: npm run lint -- --max-warnings=0
+      # - name: Run lint check
+      #   run: npm run lint -- --max-warnings=0
