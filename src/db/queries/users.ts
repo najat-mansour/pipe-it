@@ -1,5 +1,6 @@
 import { db } from "../index.js";
-import { NewUser, UpdateUser, User, users } from "../schema.js";
+import { users } from "../schema.js";
+import { NewUser, UpdateUser, User } from "../types.js";
 import { eq } from "drizzle-orm";
 
 export async function createUserDB(user: NewUser): Promise<User> {

@@ -1,4 +1,4 @@
-import { LoggedInUser, NewUser, UpdateUser, UserWithoutPassword } from "../db/schema.js";
+import { LoggedInUser, NewUser, UpdateUser, UserWithoutPassword } from "../db/types.js";
 import { createUserDB, deleteUserDB, getAllUsersDB, getUserByEmailDB, getUserByIdDB, getUserByUsernameDB, updateUserDB } from "../db/queries/users.js";
 import { checkPasswordHash, hashPassword } from "../utils/encryption.js";
 import { BadRequestError, UnAuthorizedError } from "../errors/http-errors.js";
