@@ -17,7 +17,7 @@ export const apiConfig: APIConfig = {
   port: Number(process.env.PORT),
   dbConfig: {
     dbUrl: process.env.DB_URL as string,
-    schemaPath: process.env.SCHEMA_Path as string,
+    schemaPath: process.env.SCHEMA_PATH as string,
     migrationConfig: {
       migrationsFolder: process.env.MIGRATION_FOLDER as string,
     },
