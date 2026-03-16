@@ -16,7 +16,7 @@ export const users = pgTable("users", {
 
 export const webhooks = pgTable("webhooks", {
   id: uuid("id").primaryKey().defaultRandom(),
-  source: varchar("source", { length: 512 }).notNull(), // URLs can be long
+  source: varchar("source", { length: 512 }).notNull().unique(),
   action: varchar("action", { length: 256 }).notNull(),
   userId: uuid("user_id")
     .notNull()
@@ -34,9 +34,4 @@ export const subscribers = pgTable("subscribers", {
   webhookId: uuid("webhook_id")
     .notNull()
     .references(() => webhooks.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at")
-    .defaultNow()
-    .notNull()
-    .$onUpdate(() => new Date()),
 });

@@ -22,6 +22,13 @@
       "when": 1773590114810,
       "tag": "0002_eager_leopardon",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1773621173253,
+      "tag": "0003_shocking_mach_iv",
+      "breakpoints": true
     }
   ]
 }
