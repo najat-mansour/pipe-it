@@ -1,9 +1,9 @@
 import { db } from "../index.js";
 import { users } from "../schema.js";
-import { NewUser, UpdateUser, User } from "../types.js";
+import { UserRequestDTO, User } from "../../types/users.js";
 import { eq } from "drizzle-orm";
 
-export async function createUserDB(user: NewUser): Promise<User> {
+export async function createUserDB(user: UserRequestDTO): Promise<User> {
   const [result] = await db.insert(users).values(user).returning();
   return result;
 }
@@ -32,7 +32,7 @@ export async function deleteUserDB(id: string): Promise<void> {
   await db.delete(users).where(eq(users.id, id)); 
 }
 
-export async function updateUserDB(id: string, user: UpdateUser): Promise<User> {
+export async function updateUserDB(id: string, user: Partial<UserRequestDTO>): Promise<User> {
   const [result] = await db.update(users).set(user).where(eq(users.id, id)).returning();
   return result;
 }

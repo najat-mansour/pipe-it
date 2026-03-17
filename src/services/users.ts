@@ -1,4 +1,4 @@
-import { LoggedInUser, NewUser, UpdateUser, UserWithoutPassword } from "../db/types.js";
+import { toUserResponseDTO, UserRequestDTO, UserResponseDTO } from "../types/users.js";
 import { createUserDB, deleteUserDB, getAllUsersDB, getUserByEmailDB, getUserByIdDB, getUserByUsernameDB, updateUserDB } from "../db/queries/users.js";
 import { checkPasswordHash, hashPassword } from "../utils/encryption.js";
 import { BadRequestError, UnAuthorizedError } from "../errors/http-errors.js";
@@ -31,22 +31,14 @@ async function checkPasswordStrengthAndHashIt(password?: string): Promise<string
   }
 }
 
-export async function createUser(user: NewUser): Promise<UserWithoutPassword> {
+export async function createUser(user: UserRequestDTO): Promise<UserResponseDTO> {
   checkUsernameAndEmailUniqueness(user.username, user.email);
   user.password = await checkPasswordStrengthAndHashIt(user.password) as string;
   const createdUser = await createUserDB(user);
-  return {
-    id: createdUser.id,
-    firstName: createdUser.firstName,
-    lastName: createdUser.lastName,
-    username: createdUser.username,
-    email: createdUser.email,
-    createdAt: createdUser.createdAt,
-    updatedAt: createdUser.updatedAt
-  }
+  return toUserResponseDTO(createdUser);
 }
 
-export async function login(username: string, password: string): Promise<LoggedInUser> {
+export async function login(username: string, password: string): Promise<UserResponseDTO & { token: string }> {
   const existedUser = await getUserByUsernameDB(username);
   if (!existedUser) {
     throw new UnAuthorizedError("Invalid username!");
@@ -59,17 +51,11 @@ export async function login(username: string, password: string): Promise<LoggedI
   const token = makeJWT(existedUser.id, apiConfig.jwtConfig.expiredIn, apiConfig.jwtConfig.secretKey);
   return {
     token,
-    id: existedUser.id,
-    firstName: existedUser.firstName,
-    lastName: existedUser.lastName,
-    username: existedUser.username,
-    email: existedUser.email,
-    createdAt: existedUser.createdAt,
-    updatedAt: existedUser.updatedAt
+    ...toUserResponseDTO(existedUser)
   }
 }
 
-export async function getUserById(id: string): Promise<UserWithoutPassword> {
+export async function getUserById(id: string): Promise<UserResponseDTO> {
   if(id.length !== 36) {
     throw new BadRequestError("Invalid user ID!");
   }
@@ -77,31 +63,15 @@ export async function getUserById(id: string): Promise<UserWithoutPassword> {
   if(!existedUser) {
     throw new BadRequestError("User not found!");
   }     
-  return {
-    id: existedUser.id,
-    firstName: existedUser.firstName,
-    lastName: existedUser.lastName,
-    username: existedUser.username,
-    email: existedUser.email,
-    createdAt: existedUser.createdAt,
-    updatedAt: existedUser.updatedAt
-  }
+  return toUserResponseDTO(existedUser);
 } 
 
-export async function getAllUsers(): Promise<UserWithoutPassword[]> {
+export async function getAllUsers(): Promise<UserResponseDTO[]> {
   const users = await getAllUsersDB();
   if (users.length === 0) {
     throw new BadRequestError("No users found!");
   }
-  return users.map((user) => ({
-    id: user.id,
-    firstName: user.firstName,
-    lastName: user.lastName,
-    username: user.username,
-    email: user.email,
-    createdAt: user.createdAt,
-    updatedAt: user.updatedAt
-  }));
+  return users.map((user) => toUserResponseDTO(user));
 }
 
 export async function deleteUser(id: string): Promise<void> {
@@ -115,7 +85,7 @@ export async function deleteUser(id: string): Promise<void> {
   await deleteUserDB(id);
 }   
 
-export async function updateUser(id: string, user: UpdateUser): Promise<UserWithoutPassword> {
+export async function updateUser(id: string, user: Partial<UserRequestDTO>): Promise<UserResponseDTO> {
   const existedUserById = await getUserById(id);
   if (!existedUserById) {
     throw new BadRequestError("User not found!");
@@ -123,13 +93,5 @@ export async function updateUser(id: string, user: UpdateUser): Promise<UserWith
   checkUsernameAndEmailUniqueness(user.username, user.email, id);
   user.password = await checkPasswordStrengthAndHashIt(user.password) as string;
   const updatedUser = await updateUserDB(id, user);
-  return {
-    id: updatedUser.id,
-    firstName: updatedUser.firstName,
-    lastName: updatedUser.lastName,
-    username: updatedUser.username,
-    email: updatedUser.email,
-    createdAt: updatedUser.createdAt,
-    updatedAt: updatedUser.updatedAt
-  };
+  return toUserResponseDTO(updatedUser);
 }

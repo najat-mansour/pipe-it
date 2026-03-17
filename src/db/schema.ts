@@ -1,4 +1,5 @@
 import { pgTable, uuid, varchar, timestamp } from "drizzle-orm/pg-core";
+import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -35,3 +36,22 @@ export const subscribers = pgTable("subscribers", {
     .notNull()
     .references(() => webhooks.id, { onDelete: "cascade" }),
 });
+
+export const usersRelations = relations(users, ({ many }) => ({
+  webhooks: many(webhooks),
+}));
+
+export const webhooksRelations = relations(webhooks, ({ one, many }) => ({
+  user: one(users, {
+    fields: [webhooks.userId],
+    references: [users.id],
+  }),
+  subscribers: many(subscribers),
+}));
+
+export const subscribersRelations = relations(subscribers, ({ one }) => ({
+  webhook: one(webhooks, {
+    fields: [subscribers.webhookId],
+    references: [webhooks.id],
+  }),
+}));
