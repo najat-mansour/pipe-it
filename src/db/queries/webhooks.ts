@@ -8,7 +8,7 @@ export async function createWebhookDB(userId: string, webhook: WebhookRequestDTO
         action: webhook.action,
         userId
     }).returning();
-
+    
     await db.insert(subscribers).values(
         webhook.subscribers.map((url) => ({
             webhookId: createdWebhook.id,
@@ -30,7 +30,7 @@ export async function getWebhookByIdDB(webhookId: string): Promise<Webhook | und
     return webhook;
 }
 
-export async function getWebhookBySource(source: string): Promise<Webhook | undefined> {
+export async function getWebhookBySourceDB(source: string): Promise<Webhook | undefined> {
     const webhook = await db.query.webhooks.findFirst({
         where: (webhooks, { eq }) => eq(webhooks.source, source),
         with: {
@@ -39,4 +39,14 @@ export async function getWebhookBySource(source: string): Promise<Webhook | unde
         },
     });
     return webhook;
+}
+
+export async function getAllWebhooksDB(): Promise<Webhook[]> {
+    const webhooks = await db.query.webhooks.findMany({
+        with: {
+            subscribers: true,
+            user: true
+        }
+    });
+    return webhooks;
 }

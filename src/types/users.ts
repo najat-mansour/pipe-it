@@ -17,6 +17,6 @@ export function toUserResponseDTO(user: User): UserResponseDTO {
         firstName: user.firstName,
         lastName: user.lastName,
         username: user.username,
-        email: user.email,
+        email: user.email
     }
 }
