@@ -66,3 +66,30 @@ export async function getAllWebhooksByUserIdDB(userId: string): Promise<Webhook[
 export async function deleteWebhookByIdDB(webhookId: string): Promise<void> {
     await db.delete(webhooks).where(eq(webhooks.id, webhookId));
 }
+
+export async function updateWebhookDB(webhookId: string, webhook: Partial<WebhookRequestDTO>): Promise<Webhook> {
+    if (webhook.source) {
+        await db.update(webhooks).set({
+            source: webhook.source
+        }).where(eq(webhooks.id, webhookId));
+    }
+
+    if (webhook.action) {
+        await db.update(webhooks).set({
+            action: webhook.action
+        }).where(eq(webhooks.id, webhookId));
+    }   
+
+    if (webhook.subscribers) {
+        await db.delete(subscribers).where(eq(subscribers.webhookId, webhookId));
+
+        await db.insert(subscribers).values(
+            webhook.subscribers.map((url) => ({
+                webhookId,
+                url
+            }))
+        );
+    }
+    
+    return await getWebhookByIdDB(webhookId) as Webhook;
+}       

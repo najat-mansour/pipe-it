@@ -1,12 +1,18 @@
-import { createWebhookDB, deleteWebhookByIdDB, getAllWebhooksByUserIdDB, getAllWebhooksDB, getWebhookByIdDB, getWebhookBySourceDB } from "../db/queries/webhooks.js";
+import { createWebhookDB, deleteWebhookByIdDB, getAllWebhooksByUserIdDB, getAllWebhooksDB, getWebhookByIdDB, getWebhookBySourceDB, updateWebhookDB } from "../db/queries/webhooks.js";
 import { WebhookRequestDTO, toWebhookResponseDTO, WebhookResponseDTO } from "../types/webhooks.js";
 import { BadRequestError, ForbiddenError } from "../errors/http-errors.js";
 
+async function ensureWebhookSourceUniqueness(source?: string, webhookId?: string): Promise<void> {
+    if (source) {
+        const existedWebhookBySource = await getWebhookBySourceDB(source);
+        if (existedWebhookBySource && existedWebhookBySource.id !== webhookId) {
+            throw new BadRequestError("Webhook with the same source is already existed!");
+        }
+    } 
+}
+
 export async function createWebhook(userId: string, webhook: WebhookRequestDTO): Promise<WebhookResponseDTO> {
-    const existedWebhookBySource = await getWebhookBySourceDB(webhook.source);
-    if (existedWebhookBySource) {
-        throw new BadRequestError("Webhook with the same source is already existed!");
-    }
+    await ensureWebhookSourceUniqueness(webhook.source);
     const createdWebhook = await createWebhookDB(userId, webhook);
     return toWebhookResponseDTO(createdWebhook);
 }
@@ -45,3 +51,16 @@ export async function deleteWebhookById(webhookId: string, userId: string): Prom
     }
     await deleteWebhookByIdDB(webhookId);
 }   
+
+export async function updateWebhook(webhookId: string, webhook: Partial<WebhookRequestDTO>, userId: string): Promise<WebhookResponseDTO> {
+    const existedWebhookById = await getWebhookByIdDB(webhookId);
+    if (!existedWebhookById) {
+        throw new BadRequestError("Webhook not found!");
+    }
+    if (existedWebhookById.userId !== userId) {
+        throw new ForbiddenError("You are not authorized to update this webhook!");
+    }
+    await ensureWebhookSourceUniqueness(webhook.source, webhookId);
+    const updatedWebhook = await updateWebhookDB(webhookId, webhook);
+    return toWebhookResponseDTO(updatedWebhook);
+}
