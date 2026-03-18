@@ -32,7 +32,7 @@ async function checkPasswordStrengthAndHashIt(password?: string): Promise<string
 }
 
 export async function createUser(user: UserRequestDTO): Promise<UserResponseDTO> {
-  checkUsernameAndEmailUniqueness(user.username, user.email);
+  await checkUsernameAndEmailUniqueness(user.username, user.email);
   user.password = await checkPasswordStrengthAndHashIt(user.password) as string;
   const createdUser = await createUserDB(user);
   return toUserResponseDTO(createdUser);

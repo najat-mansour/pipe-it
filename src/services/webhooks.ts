@@ -1,6 +1,6 @@
-import { createWebhookDB, getAllWebhooksDB, getWebhookByIdDB, getWebhookBySourceDB } from "../db/queries/webhooks.js";
+import { createWebhookDB, deleteWebhookByIdDB, getAllWebhooksByUserIdDB, getAllWebhooksDB, getWebhookByIdDB, getWebhookBySourceDB } from "../db/queries/webhooks.js";
 import { WebhookRequestDTO, toWebhookResponseDTO, WebhookResponseDTO } from "../types/webhooks.js";
-import { BadRequestError } from "../errors/http-errors.js";
+import { BadRequestError, ForbiddenError } from "../errors/http-errors.js";
 
 export async function createWebhook(userId: string, webhook: WebhookRequestDTO): Promise<WebhookResponseDTO> {
     const existedWebhookBySource = await getWebhookBySourceDB(webhook.source);
@@ -26,3 +26,22 @@ export async function getAllWebhooks(): Promise<WebhookResponseDTO[]> {
     }
     return webhooks.map((webhook) => toWebhookResponseDTO(webhook));
 }
+
+export async function getAllWebhooksByUserId(userId: string): Promise<WebhookResponseDTO[]> {
+    const webhooks = await getAllWebhooksByUserIdDB(userId);
+    if (webhooks.length === 0) {
+        throw new BadRequestError("No webhooks found for this user!");
+    }
+    return webhooks.map((webhook) => toWebhookResponseDTO(webhook));
+}   
+
+export async function deleteWebhookById(webhookId: string, userId: string): Promise<void> {
+    const existedWebhookById = await getWebhookByIdDB(webhookId);
+    if (!existedWebhookById) {
+        throw new BadRequestError("Webhook not found!");
+    }
+    if (existedWebhookById.userId !== userId) {
+        throw new ForbiddenError("You are not authorized to delete this webhook!");
+    }
+    await deleteWebhookByIdDB(webhookId);
+}   

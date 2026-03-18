@@ -1,6 +1,7 @@
 import { db } from "../index.js";
 import { WebhookRequestDTO, Webhook } from "../../types/webhooks.js";
 import { subscribers, webhooks } from "../schema.js";
+import { eq } from "drizzle-orm";
 
 export async function createWebhookDB(userId: string, webhook: WebhookRequestDTO): Promise<Webhook> {
     const [createdWebhook] = await db.insert(webhooks).values({
@@ -49,4 +50,19 @@ export async function getAllWebhooksDB(): Promise<Webhook[]> {
         }
     });
     return webhooks;
+}
+
+export async function getAllWebhooksByUserIdDB(userId: string): Promise<Webhook[]> {
+    const webhooks = await db.query.webhooks.findMany({
+        where: (webhooks, { eq }) => eq(webhooks.userId, userId),
+        with: {
+            subscribers: true,
+            user: true
+        }
+    });
+    return webhooks;
+}
+
+export async function deleteWebhookByIdDB(webhookId: string): Promise<void> {
+    await db.delete(webhooks).where(eq(webhooks.id, webhookId));
 }
