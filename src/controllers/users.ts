@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import { createUser, deleteUser, getAllUsers, getUserById, login, updateUser } from "../services/users.js";
+import { createUser, deleteUser, forgetPassword, getAllUsers, getUserById, login, updateUser } from "../services/users.js";
 import { getBearerToken, validateJWT } from "../utils/jwt.js";
 import { apiConfig } from "../config.js";
 
@@ -70,6 +70,18 @@ export async function updateUserHandler(req: Request, res: Response, next: NextF
     const userInfo = req.body;
     const updatedUser = await updateUser(userId, userInfo);
     res.status(200).json(updatedUser);
+
+  } catch(err: unknown) {
+    next(err);
+
+  }
+}
+
+export async function forgetPasswordHandler(req: Request, res: Response, next: NextFunction) {
+  try {
+    const { username, email } = req.body;
+    await forgetPassword(username, email);
+    res.status(200).json({ message: "Your new password is sent via email!" });
 
   } catch(err: unknown) {
     next(err);

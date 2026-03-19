@@ -13,10 +13,16 @@ type JWTConfig = {
   secretKey: string;
 };
 
+type EmailConfig = {
+  address: string;
+  token: string;
+};
+
 type APIConfig = {
   port: number;
   dbConfig: DBConfig;
   jwtConfig: JWTConfig;
+  emailConfig: EmailConfig;
 };
 
 export const apiConfig: APIConfig = {
@@ -31,5 +37,9 @@ export const apiConfig: APIConfig = {
   jwtConfig: {
     expiredIn: Number(process.env.JWT_EXPIRED_IN),
     secretKey: process.env.JWT_SECRET_KEY as string
+  },
+  emailConfig: {
+    address: process.env.EMAIL_ADDRESS as string,
+    token: process.env.EMAIL_TOKEN as string
   }
 };

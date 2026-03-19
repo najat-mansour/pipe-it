@@ -36,3 +36,7 @@ export async function updateUserDB(id: string, user: Partial<UserRequestDTO>): P
   const [result] = await db.update(users).set(user).where(eq(users.id, id)).returning();
   return result;
 }
+
+export async function updatePasswordDB(username: string, newPassword: string): Promise<void> {
+  await db.update(users).set({ password: newPassword }).where(eq(users.username, username));
+}
