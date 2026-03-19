@@ -20,13 +20,15 @@ type EmailConfig = {
 
 type APIConfig = {
   port: number;
+  refreshTokenExpiredIn: number;
   dbConfig: DBConfig;
   jwtConfig: JWTConfig;
   emailConfig: EmailConfig;
 };
 
 export const apiConfig: APIConfig = {
-  port: Number(process.env.PORT),
+  port: Number(process.env.PORT as string),
+  refreshTokenExpiredIn: Number(process.env.REFRESH_TOKEN_EXPIRED_IN as string),
   dbConfig: {
     dbUrl: process.env.DB_URL as string,
     schemaPath: process.env.SCHEMA_PATH as string,

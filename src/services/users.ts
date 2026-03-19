@@ -3,11 +3,12 @@ import { createUserDB, deleteUserDB, getAllUsersDB, getUserByEmailDB, getUserByI
 import { checkPasswordHash, hashPassword } from "../utils/encryption.js";
 import { BadRequestError, UnAuthorizedError } from "../errors/http-errors.js";
 import { isStrongPassword } from "../utils/password-strength-checker.js";
-import { makeJWT } from "../utils/jwt.js";
-import { apiConfig } from "../config.js";
+import { makeJWT, makeRefreshToken } from "../utils/jwt.js";
 import { generateRandomPassword } from "../utils/password-generator.js";
 import { generateForgetPasswordHtmlTemplate } from "../utils/templates-generator.js";
 import { sendMail } from "../utils/email-sender.js";
+import { createRefreshToken } from "../db/queries/refresh-tokens.js";
+import { apiConfig } from "../config.js";
 
 async function checkUsernameAndEmailUniqueness(username?: string, email?: string, userId?: string): Promise<void> {
   if (username) {
@@ -41,7 +42,7 @@ export async function createUser(user: UserRequestDTO): Promise<UserResponseDTO>
   return toUserResponseDTO(createdUser);
 }
 
-export async function login(username: string, password: string): Promise<UserResponseDTO & { token: string }> {
+export async function login(username: string, password: string): Promise<UserResponseDTO & { token: string; refreshToken: string }> {
   const existedUser = await getUserByUsernameDB(username);
   if (!existedUser) {
     throw new UnAuthorizedError("Invalid username!");
@@ -51,9 +52,18 @@ export async function login(username: string, password: string): Promise<UserRes
     throw new UnAuthorizedError("Wrong password!");
   } 
 
-  const token = makeJWT(existedUser.id, apiConfig.jwtConfig.expiredIn, apiConfig.jwtConfig.secretKey);
+  //! Create a JWT token
+  const token = makeJWT(existedUser.id);
+  //! Create a refresh token and store it in the database 
+  const refreshToken = makeRefreshToken();
+  await createRefreshToken({ 
+    token: refreshToken,
+    userId: existedUser.id,
+    expiresAt: new Date(Date.now() + apiConfig.refreshTokenExpiredIn)
+   });
   return {
     token,
+    refreshToken,
     ...toUserResponseDTO(existedUser)
   }
 }

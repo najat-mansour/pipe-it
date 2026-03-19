@@ -1,12 +1,11 @@
 import { Request, Response, NextFunction } from "express";
 import { getBearerToken, validateJWT } from "../utils/jwt.js";
-import { apiConfig } from "../config.js";
 import { createWebhook, getWebhookById, getAllWebhooks, getAllWebhooksByUserId, deleteWebhookById, updateWebhook } from "../services/webhooks.js";
 
 export async function createWebhookHandler(req: Request, res: Response, next: NextFunction) {
     try {
         const token = getBearerToken(req);
-        const userId = validateJWT(token, apiConfig.jwtConfig.secretKey);
+        const userId = validateJWT(token);
         const webhook = req.body;
         const result = await createWebhook(userId, webhook);
         res.status(201).json(result);
@@ -56,7 +55,7 @@ export async function deleteWebhookByIdHandler(req: Request, res: Response, next
     try {
         const webhookId = req.params.id as string;
         const token = getBearerToken(req);
-        const userId = validateJWT(token, apiConfig.jwtConfig.secretKey);
+        const userId = validateJWT(token);
         await deleteWebhookById(webhookId, userId);
         res.status(204).send();
 
@@ -71,7 +70,7 @@ export async function updateWebhookHandler(req: Request, res: Response, next: Ne
         const webhookId = req.params.id as string;
         const webhook = req.body;
         const token = getBearerToken(req);
-        const userId = validateJWT(token, apiConfig.jwtConfig.secretKey);
+        const userId = validateJWT(token);
         const updatedWebhook = await updateWebhook(webhookId, webhook, userId);
         res.status(200).json(updatedWebhook);
 
