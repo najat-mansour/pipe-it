@@ -1,4 +1,4 @@
-import { pgTable, uuid, varchar, timestamp, text } from "drizzle-orm/pg-core";
+import { pgTable, uuid, varchar, timestamp, text, jsonb, pgEnum  } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
@@ -19,7 +19,7 @@ export const refreshTokens = pgTable('refresh_tokens', {
   token: text('token').primaryKey(),
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).notNull(),
+  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).unique().notNull(),
   expiresAt: timestamp('expires_at').notNull(),
   revokedAt: timestamp('revoked_at'), 
 });
@@ -46,8 +46,31 @@ export const subscribers = pgTable("subscribers", {
     .references(() => webhooks.id, { onDelete: "cascade" }),
 });
 
-export const usersRelations = relations(users, ({ many }) => ({
+export const taskStatusEnum = pgEnum("task_status", [
+  "CREATED",
+  "IN_PROCESS",
+  "FINISHED",
+]);
+
+export const tasks = pgTable("tasks", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  webhookId: uuid("webhook_id").references(() => webhooks.id, { onDelete: "cascade" }).notNull(),
+  payload: jsonb("payload").notNull(),
+  status: taskStatusEnum("status").default("CREATED").notNull(),  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  processedAt: timestamp("processed_at")
+});
+
+export const usersRelations = relations(users, ({ one, many }) => ({
   webhooks: many(webhooks),
+  refreshToken: one(refreshTokens),
+}));
+
+export const refreshTokensRelations = relations(refreshTokens, ({ one }) => ({
+  user: one(users, {
+    fields: [refreshTokens.userId],
+    references: [users.id],
+  }),
 }));
 
 export const webhooksRelations = relations(webhooks, ({ one, many }) => ({
@@ -56,11 +79,19 @@ export const webhooksRelations = relations(webhooks, ({ one, many }) => ({
     references: [users.id],
   }),
   subscribers: many(subscribers),
+  processes: many(tasks)
 }));
 
 export const subscribersRelations = relations(subscribers, ({ one }) => ({
   webhook: one(webhooks, {
     fields: [subscribers.webhookId],
+    references: [webhooks.id]
+  }),
+}));
+
+export const tasksRelations = relations(tasks, ({ one }) => ({
+  webhook: one(webhooks, {
+    fields: [tasks.webhookId],
     references: [webhooks.id],
   }),
 }));

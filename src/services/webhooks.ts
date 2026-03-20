@@ -1,6 +1,6 @@
 import { createWebhookDB, deleteWebhookByIdDB, getAllWebhooksByUserIdDB, getAllWebhooksDB, getWebhookByIdDB, getWebhookBySourceDB, updateWebhookDB } from "../db/queries/webhooks.js";
 import { WebhookRequestDTO, toWebhookResponseDTO, WebhookResponseDTO } from "../types/webhooks.js";
-import { BadRequestError, ForbiddenError } from "../errors/http-errors.js";
+import { BadRequestError, ForbiddenError, NotFoundError } from "../errors/http-errors.js";
 
 async function ensureWebhookSourceUniqueness(source?: string, webhookId?: string): Promise<void> {
     if (source) {
@@ -20,7 +20,7 @@ export async function createWebhook(userId: string, webhook: WebhookRequestDTO):
 export async function getWebhookById(webhookId: string): Promise<WebhookResponseDTO> {
     const webhook = await getWebhookByIdDB(webhookId);
     if (!webhook) {
-        throw new BadRequestError("Webhook not found!");
+        throw new NotFoundError("Webhook not found!");
     }
     return toWebhookResponseDTO(webhook);
 }
@@ -28,7 +28,7 @@ export async function getWebhookById(webhookId: string): Promise<WebhookResponse
 export async function getAllWebhooks(): Promise<WebhookResponseDTO[]> {
     const webhooks = await getAllWebhooksDB();
     if (webhooks.length === 0) {
-        throw new BadRequestError("No webhooks found!");
+        throw new NotFoundError("No webhooks found!");
     }
     return webhooks.map((webhook) => toWebhookResponseDTO(webhook));
 }
@@ -36,7 +36,7 @@ export async function getAllWebhooks(): Promise<WebhookResponseDTO[]> {
 export async function getAllWebhooksByUserId(userId: string): Promise<WebhookResponseDTO[]> {
     const webhooks = await getAllWebhooksByUserIdDB(userId);
     if (webhooks.length === 0) {
-        throw new BadRequestError("No webhooks found for this user!");
+        throw new NotFoundError("No webhooks found for this user!");
     }
     return webhooks.map((webhook) => toWebhookResponseDTO(webhook));
 }   

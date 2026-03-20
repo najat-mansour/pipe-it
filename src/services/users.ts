@@ -1,7 +1,7 @@
 import { toUserResponseDTO, UserRequestDTO, UserResponseDTO } from "../types/users.js";
 import { createUserDB, deleteUserDB, getAllUsersDB, getUserByEmailDB, getUserByIdDB, getUserByUsernameDB, updatePasswordDB, updateUserDB } from "../db/queries/users.js";
 import { checkPasswordHash, hashPassword } from "../utils/encryption.js";
-import { BadRequestError, UnAuthorizedError } from "../errors/http-errors.js";
+import { BadRequestError, UnAuthorizedError, NotFoundError } from "../errors/http-errors.js";
 import { isStrongPassword } from "../utils/password-strength-checker.js";
 import { makeJWT, makeRefreshToken } from "../utils/jwt.js";
 import { generateRandomPassword } from "../utils/password-generator.js";
@@ -74,7 +74,7 @@ export async function getUserById(id: string): Promise<UserResponseDTO> {
   }
   const existedUser = await getUserByIdDB(id);
   if(!existedUser) {
-    throw new BadRequestError("User not found!");
+    throw new NotFoundError("User not found!");
   }     
   return toUserResponseDTO(existedUser);
 } 
@@ -82,7 +82,7 @@ export async function getUserById(id: string): Promise<UserResponseDTO> {
 export async function getAllUsers(): Promise<UserResponseDTO[]> {
   const users = await getAllUsersDB();
   if (users.length === 0) {
-    throw new BadRequestError("No users found!");
+    throw new NotFoundError("No users found!");
   }
   return users.map((user) => toUserResponseDTO(user));
 }
