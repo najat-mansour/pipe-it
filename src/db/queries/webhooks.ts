@@ -10,6 +10,7 @@ export async function createWebhookDB(userId: string, webhook: WebhookRequestDTO
         userId
     }).returning();
     
+    //! Insert the corresponding subscribers
     await db.insert(subscribers).values(
         webhook.subscribers.map((url) => ({
             webhookId: createdWebhook.id,

@@ -1,14 +1,11 @@
+import { Subscriber, SubscriberResponseDTO, toSubscriberResponseDTO } from "./subscribers.js";
 import { toUserResponseDTO, User, UserResponseDTO } from "./users.js";
 
 export type Webhook = {
     id: string;
     source: string;
     action: string;
-    subscribers: {
-        id: string;
-        url: string;
-        webhookId: string;
-    }[];
+    subscribers: Subscriber[];
     userId: string;
     user: User;
     createdAt: Date;
@@ -23,7 +20,7 @@ export type WebhookResponseDTO = {
     id: string;
     source: string;
     action: string;
-    subscribers: string[];
+    subscribers: SubscriberResponseDTO[];
     user: UserResponseDTO;
 };
 
@@ -32,7 +29,7 @@ export function toWebhookResponseDTO(webhook: Webhook): WebhookResponseDTO {
         id: webhook.id,
         source: webhook.source,
         action: webhook.action,
-        subscribers: webhook.subscribers.map((subscriber) => subscriber.url),
+        subscribers: webhook.subscribers.map((subscriber) => toSubscriberResponseDTO(subscriber)),
         user: toUserResponseDTO(webhook.user)
     }
 }

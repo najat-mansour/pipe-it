@@ -1,6 +1,7 @@
+import { Delivery, DeliveryResponseDTO, toDeliveryResponseDTO } from "./deliveries.js";
 import { toWebhookResponseDTO, Webhook, WebhookResponseDTO } from "./webhooks.js";
 
-export type TaskStatus = "CREATED" | "IN_PROCESS" | "FINISHED"
+export type TaskStatus = "CREATED" | "IN_PROCESS" | "FINISHED";
 
 export type Task = {
     id: string;
@@ -9,6 +10,7 @@ export type Task = {
     status: TaskStatus;
     createdAt: Date;
     processedAt: Date | null;
+    deliveries: Delivery[];
     webhook: Webhook;
 };
 
@@ -18,6 +20,7 @@ export type TaskResponseDTO = {
     status: TaskStatus;
     createdAt: Date;
     processedAt: Date | null;
+    deliveries: DeliveryResponseDTO[];
     webhook: WebhookResponseDTO;
 };
 
@@ -28,6 +31,7 @@ export function toTaskResponseDTO(task: Task): TaskResponseDTO {
         status: task.status,
         createdAt: task.createdAt,
         processedAt: task.processedAt,
+        deliveries: task.deliveries.map((delivery) => toDeliveryResponseDTO(delivery)),
         webhook: toWebhookResponseDTO(task.webhook)
     }
 }

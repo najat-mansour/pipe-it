@@ -5,50 +5,8 @@
     {
       "idx": 0,
       "version": "7",
-      "when": 1773533421414,
-      "tag": "0000_nasty_mentor",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1773534310740,
-      "tag": "0001_last_power_pack",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1773590114810,
-      "tag": "0002_eager_leopardon",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1773621173253,
-      "tag": "0003_shocking_mach_iv",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1773933334660,
-      "tag": "0004_polite_vanisher",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1774034234129,
-      "tag": "0005_material_leader",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1774053156584,
-      "tag": "0006_married_romulus",
+      "when": 1774118036865,
+      "tag": "0000_outstanding_bloodscream",
       "breakpoints": true
     }
   ]
