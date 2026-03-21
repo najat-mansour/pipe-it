@@ -7,6 +7,6 @@ export async function errorHandlerMiddleware(err: Error, req: Request, res: Resp
     const errorMessage: string = err.message;
     res.status(statusCode).json({ error: errorMessage });
   }
-  res.status(500).json({ err: err.message });
+  res.status(500).json({ error: err.message });
   next();
 }

@@ -1,9 +1,9 @@
-import { getRefreshTokenByToken, revokeRefreshToken } from "../db/queries/refresh-tokens.js";
+import { getRefreshTokenByTokenDB, revokeRefreshTokenDB } from "../db/queries/refresh-tokens.js";
 import { UnAuthorizedError } from "../errors/http-errors.js";
 import { makeJWT } from "../utils/jwt.js";
 
 export async function refreshToken(token: string): Promise<{ jwtToken: string }> {
-    const refreshToken = await getRefreshTokenByToken(token);
+    const refreshToken = await getRefreshTokenByTokenDB(token);
     if (!refreshToken || refreshToken.revokedAt != null || Date.now() > refreshToken.expiresAt.getTime()) {
         throw new UnAuthorizedError("Invalid refresh token!");
     }
@@ -14,5 +14,5 @@ export async function refreshToken(token: string): Promise<{ jwtToken: string }>
 }
 
 export async function revokeToken(token: string): Promise<void> {
-    await revokeRefreshToken(token);
+    await revokeRefreshTokenDB(token);
 }

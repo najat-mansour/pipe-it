@@ -10,7 +10,7 @@ export type Task = {
     createdAt: Date;
     processedAt: Date | null;
     webhook: Webhook;
-}
+};
 
 export type TaskResponseDTO = {
     id: string;

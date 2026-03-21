@@ -46,7 +46,7 @@ export const subscribers = pgTable("subscribers", {
     .references(() => webhooks.id, { onDelete: "cascade" }),
 });
 
-export const taskStatusEnum = pgEnum("task_status", [
+const taskStatusEnum = pgEnum("task_status", [
   "CREATED",
   "IN_PROCESS",
   "FINISHED",
@@ -79,7 +79,7 @@ export const webhooksRelations = relations(webhooks, ({ one, many }) => ({
     references: [users.id],
   }),
   subscribers: many(subscribers),
-  processes: many(tasks)
+  tasks: many(tasks)
 }));
 
 export const subscribersRelations = relations(subscribers, ({ one }) => ({

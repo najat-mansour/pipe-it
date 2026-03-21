@@ -7,7 +7,7 @@ import { makeJWT, makeRefreshToken } from "../utils/jwt.js";
 import { generateRandomPassword } from "../utils/password-generator.js";
 import { generateForgetPasswordHtmlTemplate } from "../utils/templates-generator.js";
 import { sendMail } from "../utils/email-sender.js";
-import { createRefreshToken } from "../db/queries/refresh-tokens.js";
+import { getRefreshTokenByUserIdDB, createRefreshTokenDB, updateRefreshTokeDB } from "../db/queries/refresh-tokens.js";
 import { apiConfig } from "../config.js";
 
 async function checkUsernameAndEmailUniqueness(username?: string, email?: string, userId?: string): Promise<void> {
@@ -50,17 +50,27 @@ export async function login(username: string, password: string): Promise<UserRes
 
   if (!await checkPasswordHash(existedUser.password, password)) {
     throw new UnAuthorizedError("Wrong password!");
-  } 
+  }
 
-  //! Create a JWT token
+  //! Create a JWT token and refresh token
   const token = makeJWT(existedUser.id);
-  //! Create a refresh token and store it in the database 
   const refreshToken = makeRefreshToken();
-  await createRefreshToken({ 
+  
+  //! Insert a new record / update an existing one
+  const dataToBeInsertedOrUpdated = {
     token: refreshToken,
     userId: existedUser.id,
     expiresAt: new Date(Date.now() + apiConfig.refreshTokenExpiredIn)
-   });
+  };
+  const existedRefreshToken = await getRefreshTokenByUserIdDB(existedUser.id);
+  if (existedRefreshToken) {
+    await updateRefreshTokeDB(existedRefreshToken.userId, dataToBeInsertedOrUpdated);
+
+  } else {
+    await createRefreshTokenDB(dataToBeInsertedOrUpdated);
+
+  }
+
   return {
     token,
     refreshToken,
@@ -69,15 +79,15 @@ export async function login(username: string, password: string): Promise<UserRes
 }
 
 export async function getUserById(id: string): Promise<UserResponseDTO> {
-  if(id.length !== 36) {
+  if (id.length !== 36) {
     throw new BadRequestError("Invalid user ID!");
   }
   const existedUser = await getUserByIdDB(id);
-  if(!existedUser) {
+  if (!existedUser) {
     throw new NotFoundError("User not found!");
-  }     
+  }
   return toUserResponseDTO(existedUser);
-} 
+}
 
 export async function getAllUsers(): Promise<UserResponseDTO[]> {
   const users = await getAllUsersDB();
@@ -88,15 +98,15 @@ export async function getAllUsers(): Promise<UserResponseDTO[]> {
 }
 
 export async function deleteUser(id: string): Promise<void> {
-  if(id.length !== 36) {
+  if (id.length !== 36) {
     throw new BadRequestError("Invalid user ID!");
-  }  
+  }
   const existedUser = await getUserByIdDB(id);
-  if ( !existedUser) {
+  if (!existedUser) {
     throw new BadRequestError("User not found!");
-  } 
+  }
   await deleteUserDB(id);
-}   
+}
 
 export async function updateUser(id: string, user: Partial<UserRequestDTO>): Promise<UserResponseDTO> {
   const existedUserById = await getUserById(id);
