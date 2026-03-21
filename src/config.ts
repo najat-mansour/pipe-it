@@ -18,12 +18,20 @@ type EmailConfig = {
   token: string;
 };
 
+type ExternalAPIsKeys = {
+  gemini: string;
+  deepL: string;
+  weatherBit: string;
+  apiFootball: string;
+}
+
 type APIConfig = {
   port: number;
   refreshTokenExpiredIn: number;
   dbConfig: DBConfig;
   jwtConfig: JWTConfig;
   emailConfig: EmailConfig;
+  externalApisKeys: ExternalAPIsKeys;
 };
 
 export const apiConfig: APIConfig = {
@@ -43,5 +51,11 @@ export const apiConfig: APIConfig = {
   emailConfig: {
     address: process.env.EMAIL_ADDRESS as string,
     token: process.env.EMAIL_TOKEN as string
+  },
+  externalApisKeys: {
+    gemini: process.env.GEMINI_API_KEY as string,
+    deepL: process.env.DEEPL_API_KEY as string,
+    weatherBit: process.env.ONE_WEATHER_API_KEY as string,
+    apiFootball: process.env.API_FOOTBALL_API_KEY as string
   }
 };

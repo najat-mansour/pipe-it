@@ -10,7 +10,7 @@ const tasksWorker = new Worker("tasks-queue", async(task) => {
     await updateTaskStatusDB(toBeProcessedTask.id, "IN_PROCESS");
 
     //! 2- Processing the task
-
+    
 
     //! 3- Mark the task as "FINISHED"
     await updateTaskStatusDB(toBeProcessedTask.id, "FINISHED");
