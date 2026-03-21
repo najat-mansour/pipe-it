@@ -8,7 +8,7 @@ export async function increaseAttemptsNumberDB(id: string): Promise<void> {
 }
 
 export async function updateDeliveryStatusDB(id: string, status: DeliveryStatus): Promise<void> {
-    if (status === "DELIVERED")
+    if (status === "SUCCESS")
         await db.update(deliveries).set({ status, deliveredAt: new Date() }).where(eq(deliveries.id, id));
     else 
         await db.update(deliveries).set({ status }).where(eq(deliveries.id, id));

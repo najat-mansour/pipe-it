@@ -62,9 +62,9 @@ export const tasks = pgTable("tasks", {
 });
 
 export const deliveryStatusEnum = pgEnum("delivery_status", [
-  "WAITING",
-  "TRYING",
-  "DELIVERED",
+  "NOT_DELIVERED",
+  "FAILED",
+  "SUCCESS",
 ]);
 
 export const deliveries = pgTable("deliveries", {
@@ -72,8 +72,8 @@ export const deliveries = pgTable("deliveries", {
   taskId: uuid("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
   subscriberId: uuid("subscriber_id").notNull().references(() => subscribers.id, { onDelete: "cascade" }),
   attemptsNumber: integer("attempts_number").default(0).notNull(),
-  status: deliveryStatusEnum("status").default("WAITING").notNull(),
-  deliveredAt: timestamp("delivered_at").defaultNow().notNull(),
+  status: deliveryStatusEnum("status").default("NOT_DELIVERED").notNull(),
+  deliveredAt: timestamp("delivered_at"),
 });
 
 export const usersRelations = relations(users, ({ one, many }) => ({

@@ -1,4 +1,4 @@
-export type DeliveryStatus = "WAITING" | "TRYING" | "DELIVERED";
+export type DeliveryStatus = "NOT_DELIVERED" | "FAILED" | "SUCCESS";
 
 export type Delivery = {
     id: string;
@@ -8,10 +8,11 @@ export type Delivery = {
     attemptsNumber: number;
     deliveredAt: Date | null;
 };
-export type DeliveryResponseDTO = Pick<Delivery, "subscriberId" | "status" | "attemptsNumber" | "deliveredAt">;
+export type DeliveryResponseDTO = Omit<Delivery, "taskId">;
 
 export function toDeliveryResponseDTO(delivery: Delivery): DeliveryResponseDTO {
     return {
+        id: delivery.id,
         subscriberId: delivery.subscriberId,
         status: delivery.status,
         attemptsNumber: delivery.attemptsNumber,

@@ -13,7 +13,7 @@ export async function createTaskDB(webhookId: string, payload: unknown): Promise
     
     const webhook = await getWebhookByIdDB(webhookId) as Webhook;
 
-    //! Insert the corresponding delivers
+    //! Insert the corresponding deliveries
     await db.insert(deliveries).values(
         webhook.subscribers.map((subscriber) => ({
             taskId: result.id,
