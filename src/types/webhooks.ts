@@ -1,7 +1,7 @@
 import { Subscriber, SubscriberResponseDTO, toSubscriberResponseDTO } from "./subscribers.js";
 import { toUserResponseDTO, User, UserResponseDTO } from "./users.js";
 
-type Action = "SUMMARIZATION" | "TRANSLATION" | "WEATHER-QUERY" | "TODAY-MATCHES";
+export type Action = "SUMMARIZATION" | "TRANSLATION" | "WEATHER-QUERY" | "TODAY-MATCHES";
 
 export type Webhook = {
     id: string;

@@ -63,7 +63,7 @@ export const taskStatusEnum = pgEnum("task_status", [
 export const tasks = pgTable("tasks", {
   id: uuid("id").primaryKey().defaultRandom(),
   webhookId: uuid("webhook_id").references(() => webhooks.id, { onDelete: "cascade" }).notNull(),
-  payload: jsonb("payload").notNull().$type<Payload>().notNull(),
+  payload: jsonb("payload").$type<Payload>(),
   status: taskStatusEnum("status").default("CREATED").notNull(),  
   createdAt: timestamp("created_at").defaultNow().notNull(),
   processedAt: timestamp("processed_at")
