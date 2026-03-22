@@ -1,5 +1,6 @@
 import { pgTable, uuid, varchar, timestamp, text, jsonb, integer, pgEnum  } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
+import { Payload } from "../types/tasks";
 
 export const users = pgTable("users", {
   id: uuid("id").primaryKey().defaultRandom(),
@@ -24,10 +25,17 @@ export const refreshTokens = pgTable('refresh_tokens', {
   revokedAt: timestamp('revoked_at'), 
 });
 
+export const actionEnum = pgEnum("action", [
+  "SUMMARIZATION",
+  "TRANSLATION",
+  "WEATHER-QUERY",
+  "TODAY-MATCHES"
+]);
+
 export const webhooks = pgTable("webhooks", {
   id: uuid("id").primaryKey().defaultRandom(),
   source: varchar("source", { length: 512 }).notNull().unique(),
-  action: varchar("action", { length: 256 }).notNull(),
+  action: actionEnum("action").notNull(),
   userId: uuid("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
@@ -55,7 +63,7 @@ export const taskStatusEnum = pgEnum("task_status", [
 export const tasks = pgTable("tasks", {
   id: uuid("id").primaryKey().defaultRandom(),
   webhookId: uuid("webhook_id").references(() => webhooks.id, { onDelete: "cascade" }).notNull(),
-  payload: jsonb("payload").notNull(),
+  payload: jsonb("payload").notNull().$type<Payload>().notNull(),
   status: taskStatusEnum("status").default("CREATED").notNull(),  
   createdAt: timestamp("created_at").defaultNow().notNull(),
   processedAt: timestamp("processed_at")

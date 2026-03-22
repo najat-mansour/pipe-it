@@ -2,9 +2,9 @@ import { createTaskDB, getAllTasksDB, getTaskByIdDB } from "../db/queries/tasks.
 import { getWebhookBySourceDB } from "../db/queries/webhooks.js";
 import { BadRequestError, NotFoundError } from "../errors/http-errors.js";
 import { tasksQueue } from "../queue/tasks-queue.js";
-import { TaskResponseDTO, toTaskResponseDTO } from "../types/tasks.js";
+import { Payload, TaskResponseDTO, toTaskResponseDTO } from "../types/tasks.js";
 
-export async function createTask(source: string, payload: unknown): Promise<TaskResponseDTO> {
+export async function createTask(source: string, payload: Payload): Promise<TaskResponseDTO> {
     const webhook = await getWebhookBySourceDB(source);
     if (!webhook) {
         throw new BadRequestError("Source not found!");

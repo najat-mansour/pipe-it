@@ -1,10 +1,12 @@
 import { Subscriber, SubscriberResponseDTO, toSubscriberResponseDTO } from "./subscribers.js";
 import { toUserResponseDTO, User, UserResponseDTO } from "./users.js";
 
+type Action = "SUMMARIZATION" | "TRANSLATION" | "WEATHER-QUERY" | "TODAY-MATCHES";
+
 export type Webhook = {
     id: string;
     source: string;
-    action: string;
+    action: Action;
     subscribers: Subscriber[];
     userId: string;
     user: User;
@@ -13,13 +15,13 @@ export type Webhook = {
 };
 export type WebhookRequestDTO = {
     source: string;
-    action: string;
+    action: Action;
     subscribers: string[];
 };
 export type WebhookResponseDTO = {
     id: string;
     source: string;
-    action: string;
+    action: Action;
     subscribers: SubscriberResponseDTO[];
     user: UserResponseDTO;
 };

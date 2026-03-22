@@ -1,0 +1,2 @@
+CREATE TYPE "public"."action" AS ENUM('SUMMARIZATION', 'TRANSLATION', 'WEATHER-QUERY', 'TODAY-MATCHES');--> statement-breakpoint
+ALTER TABLE "webhooks" ALTER COLUMN "action" SET DATA TYPE "public"."action" USING "action"::text::"public"."action";

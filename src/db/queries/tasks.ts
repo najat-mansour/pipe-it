@@ -1,11 +1,11 @@
-import { Task, TaskStatus } from "../../types/tasks.js";
+import { Payload, Task, TaskStatus } from "../../types/tasks.js";
 import { db } from "../index.js";
 import { deliveries, tasks } from "../schema.js";
 import { eq } from "drizzle-orm";
 import { getWebhookByIdDB } from "./webhooks.js";
 import { Webhook } from "../../types/webhooks.js";
 
-export async function createTaskDB(webhookId: string, payload: unknown): Promise<Task> {
+export async function createTaskDB(webhookId: string, payload: Payload): Promise<Task> {
     const [result] = await db.insert(tasks).values({
         webhookId,
         payload

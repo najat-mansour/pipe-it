@@ -8,6 +8,20 @@
       "when": 1774125100368,
       "tag": "0000_breezy_captain_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1774194034473,
+      "tag": "0001_kind_skrulls",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1774194602305,
+      "tag": "0002_smart_maggott",
+      "breakpoints": true
     }
   ]
 }

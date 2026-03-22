@@ -3,10 +3,16 @@ import { toWebhookResponseDTO, Webhook, WebhookResponseDTO } from "./webhooks.js
 
 export type TaskStatus = "CREATED" | "IN_PROCESS" | "FINISHED";
 
+export type Payload = {
+    city?: string;
+    text?: string;
+    destLanguage?: string
+}
+
 export type Task = {
     id: string;
     webhookId: string;
-    payload: unknown;
+    payload: Payload; 
     status: TaskStatus;
     createdAt: Date;
     processedAt: Date | null;
@@ -16,7 +22,7 @@ export type Task = {
 
 export type TaskResponseDTO = {
     id: string;
-    payload: unknown;
+    payload: Payload;
     status: TaskStatus;
     createdAt: Date;
     processedAt: Date | null;
