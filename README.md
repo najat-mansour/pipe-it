@@ -24,7 +24,7 @@ ___
 * **`TypeScript`** Language. 
     * **`Express`** Back-End Framework. 
     * **`Drizzle ORM`**.
-* **`PostgresSQL`** Relational Database. 
+* **`PostgreSQL`** Relational Database. 
 * **`Redis`**: Implementing _Rate-Limiter_ & _Job-Queue_ via `BullMQ`. 
 ___
 
@@ -143,7 +143,7 @@ cp .env.example .env                # Creates .env file
 docker compose up 
 ```
 #### Local Development Setup  
-Requirements: `Node.js`, `postgresSQL`, `Docker`.
+Requirements: `Node.js`, `postgreSQL`, `Docker`.
 ```shell
 git clone https://github.com/najat-mansour/pipe-it.git     
 cd pipe-it  
