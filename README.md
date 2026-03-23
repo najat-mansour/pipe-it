@@ -7,16 +7,16 @@ This is the final project in **Foothill Technology Solutions (FTS)** <u>Back-End
 ___
 
 ## Supported Actions
-##### **<u>Text Summarization</u>**
+#### **<u>Text Summarization</u>**
 Summarize text using **_Gemini API_**.
 
-##### **<u>Text Translation</u>**
+#### **<u>Text Translation</u>**
 Translate text into a specified target language using **_DeepL API_**.
 
-##### **<u>Weather in a City</u>**
+#### **<u>Weather in a City</u>**
 Retrieve weather data for a given city using **_Weatherbit API_**. City names are automatically converted into latitude and longitude using **_Nominatim / OpenStreetMap API_**.
 
-##### **<u>Today's Matches</u>**
+#### **<u>Today's Matches</u>**
 Fetches today's matches in popular leagues using **_API-Football API_**. 
 ___
 
@@ -64,7 +64,7 @@ ___
 ___
 
 ## Database Schema
-##### Users
+#### Users
 
 | Column      | Type         |
 |-------------|--------------|
@@ -77,7 +77,7 @@ ___
 | created_at  | TIMESTAMP    |
 | updated_at  | TIMESTAMP    |
 
-##### Refresh Tokens
+#### Refresh Tokens
 
 | Column      | Type         |
 |-------------|--------------|
@@ -88,7 +88,7 @@ ___
 | expires_at  | TIMESTAMP    |
 | revoked_at  | TIMESTAMP    |
 
-##### Webhooks
+#### Webhooks
 
 | Column      | Type                                                                 |
 |-------------|----------------------------------------------------------------------|
@@ -99,7 +99,7 @@ ___
 | created_at  | TIMESTAMP                                                            |
 | updated_at  | TIMESTAMP                                                            |
 
-##### Subscribers
+#### Subscribers
 
 | Column      | Type         |
 |-------------|--------------|
@@ -107,7 +107,7 @@ ___
 | url         | VARCHAR(512) |
 | webhook_id  | UUID         |
 
-##### Tasks
+#### Tasks
 
 | Column       | Type                                              |
 |--------------|---------------------------------------------------|
@@ -118,7 +118,7 @@ ___
 | created_at   | TIMESTAMP                                         |
 | processed_at | TIMESTAMP                                         |
 
-##### Deliveries
+#### Deliveries
 
 | Column           | Type                                      |
 |------------------|-------------------------------------------|
@@ -131,13 +131,13 @@ ___
 ___
 
 ## Running the Project 
-##### Using Docker (Recommended)
+#### Using Docker (Recommended)
 ```shell
 git clone https://github.com/najat-mansour/pipe-it.git
 cd pipe-it 
 docker compose up 
 ```
-##### Local Development Setup  
+#### Local Development Setup  
 Requirements: `Node.js`, `postgresSQL`, `Docker`.
 ```shell
 git clone https://github.com/najat-mansour/pipe-it.git     
