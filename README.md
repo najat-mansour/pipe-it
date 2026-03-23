@@ -23,8 +23,8 @@ ___
 ## Basic Technologies
 * **`TypeScript`** Language. 
     * **`Express`** Back-End Framework. 
-* **`PostgresSQL`** Relational Database. 
     * **`Drizzle ORM`**.
+* **`PostgresSQL`** Relational Database. 
 * **`Redis`**: Implementing _Rate-Limiter_ & _Job-Queue_ via `BullMQ`. 
 ___
 
