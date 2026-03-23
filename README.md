@@ -24,6 +24,7 @@ ___
 * **`TypeScript`** Language. 
     * **`Express`** Back-End Framework. 
 * **`PostgresSQL`** Relational Database. 
+    * **`Drizzle ORM`**.
 * **`Redis`**: Implementing _Rate-Limiter_ & _Job-Queue_ via `BullMQ`. 
 ___
 
