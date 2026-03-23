@@ -21,7 +21,7 @@ function createLimiter(rateLimiterParams: RateLimiterParams) {
         message: rateLimiterParams.message,
         standardHeaders: true,
         legacyHeaders: false,
-        skipSuccessfulRequests: true,
+        skipSuccessfulRequests: false,
         keyGenerator: (req) => ipKeyGenerator(req.ip!),
     });
     return rateLimiter;

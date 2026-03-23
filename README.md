@@ -1,7 +1,7 @@
 # Pipe-it
 
 ## Overview
-**Pipe-it** is a <u>webhook management Back-End REST API</u> that allow users to create webhooks' pipelines and specifying a source URL, an action and a list of subscribers to receive the result. The user can create a task by triggering a webhook. The task is added to a job queue, executed asynchronously, and the result is delivered to the subscribers.
+**Pipe-it** is a <u>webhook management Back-End REST API</u> that allows users to create webhooks' pipelines and specifying a source URL, an action and a list of subscribers to receive the result. The user can create a task by triggering a webhook. The task is added to a job queue, executed asynchronously, and the result is delivered to the subscribers.
 
 This is the final project in **Foothill Technology Solutions (FTS)** <u>Back-End Internship</u> (Feb. - Mar. 2026). 
 ___
@@ -17,7 +17,7 @@ Translate text into a specified target language using **_DeepL API_**.
 Retrieve weather data for a given city using **_Weatherbit API_**. City names are automatically converted into latitude and longitude using **_Nominatim / OpenStreetMap API_**.
 
 #### **<u>Today's Matches</u>**
-Fetches today's matches in popular leagues using **_API-Football API_**. 
+Fetches today's matches in popular leagues using **_API-Football API_**, extract the required fields and re-format them with an enhanced structure. 
 ___
 
 ## Basic Technologies
@@ -33,7 +33,7 @@ ___
         * `index.ts`: Creates a connection to the database. 
         * `schema.ts`: Defines tables and relations. 
         * `queries`: Implements CRUD operations for each table. 
-    * **`types`**: Defines application types and response DTOs for each entity.
+    * **`types`**: Defines application types, request DTO and response DTO for each entity.
     * **`assets`**: Contains HTML templates used for emails (In case of forget password).
     * **`utils`**: Utility functions such as:
         * `encryption.ts`: Uses `argon2` for password hashing and verification.
@@ -47,7 +47,7 @@ ___
     * **`controllers`**: Extracts request parameters and body, calls service layer methods, and returns responses. 
     * **`middlewares`**: 
         * `error-handler.ts`: Returns error responses for the failed requests. 
-        * `rate-limiter.ts`: Implements three rate-limiting strategies for <u>users</u>, <u>webhooks</u> and <u>tasks</u> requests, allowing different behaviors.
+        * `rate-limiter.ts`: Implements three rate-limiting strategies for <u>users</u>, <u>webhooks</u> and <u>tasks</u> requests, allowing different behaviors for window time and maximum requests.
     * **`routes`**: Defines API routes and registers controllers' methods and middlewares -If any-. 
     * **`actions`**: 
         * `summarization.ts`: Implements <u>Text Summarization</u> action.
@@ -56,11 +56,13 @@ ___
         * `today-matches.ts`: Implements <u>Today's Matches</u> action.
         * `action-executor.ts`: Executes a specific action and returns the result.
     * **`queue`**: 
-        * `tasks-queue`: Creates a job queue for tasks using `BullMQ`.
+        * `tasks-queue`: Creates a Job-Queue for tasks using `BullMQ`.
         * `tasks-worker`: Create a worker to execute the tasks asynchronously and send the result to the subscribers. 
     * **`config.ts`**: Defines and loads the application configuration from `.env` file.
     * **`index.ts`**: Application entry point.
-* **`.github/workflows/ci.yml`**: Defines a CI pipeline for building the project, running the test cases, and checking code formatting and linting.
+* **`.github/workflows/ci.yml`**: Defines a CI pipeline for building the project, running the test cases -If any-, and checking code formatting and linting.
+* **`Dockerfile`**: Builds the Node application. 
+* **`docker-compose.yml`**: Builds and runs everything in different containers using `docker compose up`.
 ___
 
 ## Database Schema
@@ -132,16 +134,19 @@ ___
 
 ## Running the Project 
 #### Using Docker (Recommended)
+Requirements: `Docker`. 
 ```shell
 git clone https://github.com/najat-mansour/pipe-it.git
 cd pipe-it 
+cp .env.example .env                # Creates .env file                                  
 docker compose up 
 ```
 #### Local Development Setup  
 Requirements: `Node.js`, `postgresSQL`, `Docker`.
 ```shell
 git clone https://github.com/najat-mansour/pipe-it.git     
-cd pipe-it                                               
+cd pipe-it  
+cp .env.example .env                # Creates .env file                                  
 npm install                         # Install project dependencies
 npm run generate                    # Generate database schema (Drizzle)
 npm run migrate                     # Run database migrations
@@ -152,4 +157,4 @@ npm run worker                      # Start the background worker
 ___
 
 ## Developer
-**&copy; Najat-Mansour - March 2026.**
+**&copy; Najat Mansour - March 2026.**
