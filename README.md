@@ -7,16 +7,16 @@ This is the final project in **Foothill Technology Solutions (FTS)** <u>Back-End
 ___
 
 ## Supported Actions
-#### **<u>Text Summarization</u>**
+#### **<u>1. Text Summarization</u>**
 Summarize text using **_Gemini API_**.
 
-#### **<u>Text Translation</u>**
+#### **<u>2. Text Translation</u>**
 Translate text into a specified target language using **_DeepL API_**.
 
-#### **<u>Weather in a City</u>**
+#### **<u>3. Weather in a City</u>**
 Retrieve weather data for a given city using **_Weatherbit API_**. City names are automatically converted into latitude and longitude using **_Nominatim / OpenStreetMap API_**.
 
-#### **<u>Today's Matches</u>**
+#### **<u>4. Today's Matches</u>**
 Fetches today's matches in popular leagues using **_API-Football API_**, extract the required fields and re-format them with an enhanced structure. 
 ___
 
