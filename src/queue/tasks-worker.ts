@@ -1,14 +1,55 @@
 import { Worker } from "bullmq";
 import { connection } from "./tasks-queue.js";
 import { updateTaskStatusDB } from "../db/queries/tasks.js";
-import { SummarizationPayload, Task, TranslationPayload, WeatherQueryPayload } from "../types/tasks.js";
-import { getTodayMatches } from "../actions/today-matches.js";
-import { getWeather } from "../actions/weather-query.js";
-import { translate } from "../actions/translation.js";
-import { summarizeText } from "../actions/summarization.js";
 import { increaseAttemptsNumberDB, updateDeliveryStatusDB } from "../db/queries/deliveries.js";
+import { Task } from "../types/tasks.js";
+import { ActionResult, executeAction } from "../actions/action-executor.js";
+import { Subscriber } from "../types/subscribers.js";
+import { Delivery } from "../types/deliveries.js";
 
-const tasksWorker = new Worker("tasks-queue", async (task) => {
+async function sendToSubscriber(subscriber: Subscriber, deliveries: Delivery[],result: ActionResult): Promise<void> {
+  const delivery = deliveries.find(d => d.subscriberId === subscriber.id)!;
+
+  const MAX_ATTEMPTS = 3;
+  const DELAY = 500; 
+
+  let attempt = 0;
+
+  while (attempt < MAX_ATTEMPTS) {
+    try {
+      const response = await fetch(subscriber.url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(result),
+      });
+
+      await increaseAttemptsNumberDB(delivery.id);
+
+      if (response.ok) {
+        await updateDeliveryStatusDB(delivery.id, "SUCCESS");
+        return; 
+      }
+      //! Else, throw an error
+      throw new Error();
+
+    } catch {
+      attempt++;
+
+      if (attempt >= MAX_ATTEMPTS) {
+        await updateDeliveryStatusDB(delivery.id, "FAILED");
+        return;
+      }
+
+      //! Exponential Delay
+      const delay = DELAY * Math.pow(2, attempt);
+      await new Promise(res => setTimeout(res, delay));
+    }
+  }
+}
+
+new Worker("tasks-queue", async (task) => {
     //! 0- Extract the task to be processed
     const toBeProcessedTask = task.data as Task;
 
@@ -18,23 +59,7 @@ const tasksWorker = new Worker("tasks-queue", async (task) => {
     //! 2- Processing the task
     const action = toBeProcessedTask.webhook.action;
     const payload = toBeProcessedTask.payload;
-    let result = undefined;
-    if (action === "TODAY-MATCHES") {
-      result = await getTodayMatches();
-
-    } else if (action === "WEATHER-QUERY") {
-      const weatherQueryPayload = payload as WeatherQueryPayload;
-      result = await getWeather(weatherQueryPayload.city);
-
-    } else if (action === "TRANSLATION") {
-      const translationPayload = payload as TranslationPayload;
-      result = await translate(translationPayload.text, translationPayload.destLanguage);
-
-    } else if (action === "SUMMARIZATION") {
-      const summarizationPayload = payload as SummarizationPayload;
-      result = await summarizeText(summarizationPayload.text);
-
-    }
+    const result = await executeAction(action, payload) as ActionResult;
 
     //! 3- Mark the task as "FINISHED"
     await updateTaskStatusDB(toBeProcessedTask.id, "FINISHED");
@@ -43,26 +68,9 @@ const tasksWorker = new Worker("tasks-queue", async (task) => {
     const subscribers = toBeProcessedTask.webhook.subscribers;
     const deliveries = toBeProcessedTask.deliveries;
     await Promise.all(
-      subscribers.map(async (subscriber) => {
-        const response = await fetch(subscriber.url, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(result),
-        });
-
-        const delivery = deliveries.find(d => d.subscriberId === subscriber.id);
-        await increaseAttemptsNumberDB(delivery!.id);
-
-        if (response.ok) {
-          await updateDeliveryStatusDB(delivery!.id, "SUCCESS");
-
-        } else {
-          await updateDeliveryStatusDB(delivery!.id, "FAILED");
-
-        }
-      })
+      subscribers.map((subscriber) =>
+        sendToSubscriber(subscriber, deliveries, result)
+      )
     );
   },
   {

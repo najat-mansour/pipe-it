@@ -24,7 +24,7 @@ export function validateJWT(tokenString: string): string {
         const payload = jwt.verify(tokenString, apiConfig.jwtConfig.secretKey) as Payload;
         return payload.sub as string;
 
-    } catch (err: unknown) {
+    } catch {
         throw new UnAuthorizedError("Invalid JWT token!");
 
     }

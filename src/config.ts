@@ -39,9 +39,9 @@ export const apiConfig: APIConfig = {
   refreshTokenExpiredIn: Number(process.env.REFRESH_TOKEN_EXPIRED_IN as string),
   dbConfig: {
     dbUrl: process.env.DB_URL as string,
-    schemaPath: process.env.SCHEMA_PATH as string,
+    schemaPath: "./src/db/schema.ts",
     migrationConfig: {
-      migrationsFolder: process.env.MIGRATION_FOLDER as string,
+      migrationsFolder: "./src/db/migrations",
     },
   },
   jwtConfig: {

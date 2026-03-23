@@ -151,7 +151,9 @@ function convert(input: InputMatchFormat): OutputMatchFormat {
     };
 }
 
-export async function getTodayMatches(): Promise<OutputMatchFormat[]> {
+export type TodayMatchesResult = OutputMatchFormat[];
+
+export async function getTodayMatches(): Promise<TodayMatchesResult> {
     const URL = "https://v3.football.api-sports.io/fixtures";
     const currentDate = new Date().toISOString().split("T")[0];
     const response = await fetch(`${URL}?date=${currentDate}`, {

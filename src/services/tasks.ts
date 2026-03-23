@@ -7,13 +7,13 @@ import { Action } from "../types/webhooks.js";
 
 function validatePayload(action: Action, payload: Payload): void {
     if (action === "SUMMARIZATION") {
-        if (!("text" in payload)) { 
+        if (payload === null || !("text" in payload)) { 
             throw new BadRequestError("The 'text' property is not found!");
         }
     }  
 
     if (action === "TRANSLATION") {
-        if (!("text" in payload)) {
+        if (payload === null || !("text" in payload!)) {
             throw new BadRequestError("The 'text' property is not found!");
         }
         if (!("destLanguage" in payload)) {
@@ -22,7 +22,7 @@ function validatePayload(action: Action, payload: Payload): void {
     }
 
     if (action === "WEATHER-QUERY") {
-        if (!("city" in payload)) {
+        if (payload === null || !("city" in payload)) {
             throw new BadRequestError("The 'city' property is not found!");
         }
     }

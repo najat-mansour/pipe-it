@@ -2,12 +2,16 @@ import { GoogleGenAI } from "@google/genai";
 
 const ai = new GoogleGenAI({});
 
-export async function summarizeText(text: string): Promise<{ summary: string | undefined }> {
+export type SummarizationResult = { 
+  summarizedText: string | undefined 
+};
+
+export async function summarizeText(text: string): Promise<SummarizationResult> {
   const response = await ai.models.generateContent({
     model: "gemini-3-flash-preview",
     contents: `Summarize this text briefly: ${text}`,
   });
   return {
-    summary: response.text
+    summarizedText: response.text
   };
 }

@@ -3,15 +3,22 @@ import { toWebhookResponseDTO, Webhook, WebhookResponseDTO } from "./webhooks.js
 
 export type TaskStatus = "CREATED" | "IN_PROCESS" | "FINISHED";
 
-export type SummarizationPayload = { text: string };
-export type TranslationPayload = { text: string; destLanguage: string };
-export type WeatherQueryPayload = { city: string };
-export type Payload = SummarizationPayload | TranslationPayload | WeatherQueryPayload;
+export type SummarizationPayload = {
+    text: string
+};
+export type TranslationPayload = {
+    text: string;
+    destLanguage: string
+};
+export type WeatherQueryPayload = {
+    city: string
+};
+export type Payload = SummarizationPayload | TranslationPayload | WeatherQueryPayload | null;
 
 export type Task = {
     id: string;
     webhookId: string;
-    payload: Payload | null; 
+    payload: Payload;
     status: TaskStatus;
     createdAt: Date;
     processedAt: Date | null;
@@ -21,7 +28,7 @@ export type Task = {
 
 export type TaskResponseDTO = {
     id: string;
-    payload: Payload | null;
+    payload: Payload;
     status: TaskStatus;
     createdAt: Date;
     processedAt: Date | null;

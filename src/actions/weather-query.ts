@@ -16,7 +16,14 @@ async function getLatAndLong(city: string): Promise<{ lat: string, lon: string }
     }
 }
 
-export async function getWeather(city: string): Promise<{ temp: number; weather: string; windSpeed: number; snow: number }> {
+export type WeatherQueryResult = {
+    temp: number;
+    weather: string;
+    windSpeed: number;
+    snow: number;
+}
+
+export async function getWeather(city: string): Promise<WeatherQueryResult> {
     //! Convert the city into lat & lon
     const { lat, lon } = await getLatAndLong(city);
 
