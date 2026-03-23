@@ -17,7 +17,7 @@ async function getLatAndLong(city: string): Promise<{ lat: string, lon: string }
 }
 
 export type WeatherQueryResult = {
-    temp: number;
+    temperature: number;
     weather: string;
     windSpeed: number;
     snow: number;
@@ -35,7 +35,7 @@ export async function getWeather(city: string): Promise<WeatherQueryResult> {
     });
     const body = await response.json();
     return {
-        temp: body.data[0].temp,
+        temperature: body.data[0].temp,
         weather: body.data[0].weather.description,
         windSpeed: body.data[0].wind_spd,
         snow: body.data[0].snow

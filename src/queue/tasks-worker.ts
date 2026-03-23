@@ -7,7 +7,7 @@ import { ActionResult, executeAction } from "../actions/action-executor.js";
 import { Subscriber } from "../types/subscribers.js";
 import { Delivery } from "../types/deliveries.js";
 
-async function sendToSubscriber(subscriber: Subscriber, deliveries: Delivery[],result: ActionResult): Promise<void> {
+async function sendToSubscriber(subscriber: Subscriber, deliveries: Delivery[], result: ActionResult): Promise<void> {
   const delivery = deliveries.find(d => d.subscriberId === subscriber.id)!;
 
   const MAX_ATTEMPTS = 3;
@@ -19,6 +19,7 @@ async function sendToSubscriber(subscriber: Subscriber, deliveries: Delivery[],r
     try {
       const response = await fetch(subscriber.url, {
         method: "POST",
+        mode: "cors",
         headers: {
           "Content-Type": "application/json",
         },

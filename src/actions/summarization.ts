@@ -11,6 +11,7 @@ export async function summarizeText(text: string): Promise<SummarizationResult> 
     model: "gemini-3-flash-preview",
     contents: `Summarize this text briefly: ${text}`,
   });
+  
   return {
     summarizedText: response.text
   };

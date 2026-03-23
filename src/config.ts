@@ -55,7 +55,7 @@ export const apiConfig: APIConfig = {
   externalApisKeys: {
     gemini: process.env.GEMINI_API_KEY as string,
     deepL: process.env.DEEPL_API_KEY as string,
-    weatherBit: process.env.ONE_WEATHER_API_KEY as string,
+    weatherBit: process.env.WEATHER_BIT_API_KEY as string,
     apiFootball: process.env.API_FOOTBALL_API_KEY as string
   }
 };
