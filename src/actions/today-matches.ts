@@ -167,8 +167,8 @@ export async function getTodayMatches(): Promise<TodayMatchesResult> {
   const matches = body.response;
   if (matches.length === 0) {
     return {
-      message: "No today's matches found in your favorite leagues!"
-    }
+      message: "No today's matches found in your favorite leagues!",
+    };
   }
   const filteredMatches = matches.filter((match: InputMatchFormat) =>
     importantLeagues.includes(match.league.id),

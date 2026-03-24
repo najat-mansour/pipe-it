@@ -39,7 +39,7 @@ export const usersLimiter = createLimiter({
 
 export const webhooksLimiter = createLimiter({
   windowMs: 5 * 60 * 1000, //! 5 minutes
-  max: 100,
+  max: 15,
   message: { message: "Too many requests, try again after 5 minutes!" },
 });
 

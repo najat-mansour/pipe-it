@@ -6,6 +6,10 @@
 This is the final project in **Foothill Technology Solutions (FTS)** <u>Back-End Internship</u> (Feb. - Mar. 2026). 
 ___
 
+## Wiki Documentation
+Navigate to Wiki tap to see the complete documentation of this Back-End API [Press Here](https://github.com/najat-mansour/pipe-it/wiki). 
+___
+
 ## Supported Actions
 #### **<u>1. Text Summarization</u>**
 Summarize text using **_Gemini API_**.
