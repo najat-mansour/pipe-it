@@ -33,7 +33,7 @@ function createLimiter(rateLimiterParams: RateLimiterParams) {
 
 export const usersLimiter = createLimiter({
   windowMs: 15 * 60 * 1000, //! 15 minutes
-  max: 50,
+  max: 5,
   message: { message: "Too many requests, try again later after 15 minutes!" },
 });
 
