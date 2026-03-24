@@ -1,4 +1,13 @@
-import { pgTable, uuid, varchar, timestamp, text, jsonb, integer, pgEnum  } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  uuid,
+  varchar,
+  timestamp,
+  text,
+  jsonb,
+  integer,
+  pgEnum,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 import { Payload } from "../types/tasks";
 
@@ -16,20 +25,26 @@ export const users = pgTable("users", {
     .$onUpdate(() => new Date()),
 });
 
-export const refreshTokens = pgTable('refresh_tokens', {
-  token: text('token').primaryKey(),
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').defaultNow().notNull().$onUpdate(() => new Date()),
-  userId: uuid('user_id').references(() => users.id, { onDelete: 'cascade' }).unique().notNull(),
-  expiresAt: timestamp('expires_at').notNull(),
-  revokedAt: timestamp('revoked_at'), 
+export const refreshTokens = pgTable("refresh_tokens", {
+  token: text("token").primaryKey(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at")
+    .defaultNow()
+    .notNull()
+    .$onUpdate(() => new Date()),
+  userId: uuid("user_id")
+    .references(() => users.id, { onDelete: "cascade" })
+    .unique()
+    .notNull(),
+  expiresAt: timestamp("expires_at").notNull(),
+  revokedAt: timestamp("revoked_at"),
 });
 
 export const actionEnum = pgEnum("action", [
   "SUMMARIZATION",
   "TRANSLATION",
   "WEATHER-QUERY",
-  "TODAY-MATCHES"
+  "TODAY-MATCHES",
 ]);
 
 export const webhooks = pgTable("webhooks", {
@@ -62,11 +77,13 @@ export const taskStatusEnum = pgEnum("task_status", [
 
 export const tasks = pgTable("tasks", {
   id: uuid("id").primaryKey().defaultRandom(),
-  webhookId: uuid("webhook_id").references(() => webhooks.id, { onDelete: "cascade" }).notNull(),
+  webhookId: uuid("webhook_id")
+    .references(() => webhooks.id, { onDelete: "cascade" })
+    .notNull(),
   payload: jsonb("payload").$type<Payload>(),
-  status: taskStatusEnum("status").default("CREATED").notNull(),  
+  status: taskStatusEnum("status").default("CREATED").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  processedAt: timestamp("processed_at")
+  processedAt: timestamp("processed_at"),
 });
 
 export const deliveryStatusEnum = pgEnum("delivery_status", [
@@ -77,8 +94,12 @@ export const deliveryStatusEnum = pgEnum("delivery_status", [
 
 export const deliveries = pgTable("deliveries", {
   id: uuid("id").primaryKey().defaultRandom(),
-  taskId: uuid("task_id").notNull().references(() => tasks.id, { onDelete: "cascade" }),
-  subscriberId: uuid("subscriber_id").notNull().references(() => subscribers.id, { onDelete: "cascade" }),
+  taskId: uuid("task_id")
+    .notNull()
+    .references(() => tasks.id, { onDelete: "cascade" }),
+  subscriberId: uuid("subscriber_id")
+    .notNull()
+    .references(() => subscribers.id, { onDelete: "cascade" }),
   attemptsNumber: integer("attempts_number").default(0).notNull(),
   status: deliveryStatusEnum("status").default("NOT_DELIVERED").notNull(),
   deliveredAt: timestamp("delivered_at"),
@@ -102,13 +123,13 @@ export const webhooksRelations = relations(webhooks, ({ one, many }) => ({
     references: [users.id],
   }),
   subscribers: many(subscribers),
-  tasks: many(tasks)
+  tasks: many(tasks),
 }));
 
 export const subscribersRelations = relations(subscribers, ({ one, many }) => ({
   webhook: one(webhooks, {
     fields: [subscribers.webhookId],
-    references: [webhooks.id]
+    references: [webhooks.id],
   }),
   deliveries: many(deliveries),
 }));

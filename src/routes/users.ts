@@ -1,5 +1,13 @@
 import express from "express";
-import { createUserHandler, deleteUserHandler, forgetPasswordHandler, getAllUsersHandler, getUserByIdHandler, loginHandler, updateUserHandler } from "../controllers/users.js";
+import {
+  createUserHandler,
+  deleteUserHandler,
+  forgetPasswordHandler,
+  getAllUsersHandler,
+  getUserByIdHandler,
+  loginHandler,
+  updateUserHandler,
+} from "../controllers/users.js";
 import { usersLimiter } from "../middlewares/rate-limiter.js";
 
 const router = express.Router();

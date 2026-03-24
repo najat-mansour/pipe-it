@@ -8,6 +8,11 @@ type DBConfig = {
   migrationConfig: MigrationConfig;
 };
 
+type RedisConfig = {
+  host: string;
+  port: number;
+};
+
 type JWTConfig = {
   expiredIn: number;
   secretKey: string;
@@ -23,12 +28,13 @@ type ExternalAPIsKeys = {
   deepL: string;
   weatherBit: string;
   apiFootball: string;
-}
+};
 
 type APIConfig = {
   port: number;
   refreshTokenExpiredIn: number;
   dbConfig: DBConfig;
+  redisConfig: RedisConfig;
   jwtConfig: JWTConfig;
   emailConfig: EmailConfig;
   externalApisKeys: ExternalAPIsKeys;
@@ -44,18 +50,22 @@ export const apiConfig: APIConfig = {
       migrationsFolder: "./src/db/migrations",
     },
   },
+  redisConfig: {
+    host: process.env.REDIS_HOST as string,
+    port: Number(process.env.REDIS_PORT as string),
+  },
   jwtConfig: {
     expiredIn: Number(process.env.JWT_EXPIRED_IN),
-    secretKey: process.env.JWT_SECRET_KEY as string
+    secretKey: process.env.JWT_SECRET_KEY as string,
   },
   emailConfig: {
     address: process.env.EMAIL_ADDRESS as string,
-    token: process.env.EMAIL_TOKEN as string
+    token: process.env.EMAIL_TOKEN as string,
   },
   externalApisKeys: {
     gemini: process.env.GEMINI_API_KEY as string,
     deepL: process.env.DEEPL_API_KEY as string,
     weatherBit: process.env.WEATHER_BIT_API_KEY as string,
-    apiFootball: process.env.API_FOOTBALL_API_KEY as string
-  }
+    apiFootball: process.env.API_FOOTBALL_API_KEY as string,
+  },
 };

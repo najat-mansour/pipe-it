@@ -23,7 +23,5 @@ export function generateRandomPassword(length: number = 10): string {
     passwordArray.push(getRandomChar(allChars));
   }
 
-  return passwordArray
-    .sort(() => Math.random() - 0.5)
-    .join("");
+  return passwordArray.sort(() => Math.random() - 0.5).join("");
 }

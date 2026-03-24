@@ -55,12 +55,8 @@
           "name": "deliveries_task_id_tasks_id_fk",
           "tableFrom": "deliveries",
           "tableTo": "tasks",
-          "columnsFrom": [
-            "task_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["task_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -68,12 +64,8 @@
           "name": "deliveries_subscriber_id_subscribers_id_fk",
           "tableFrom": "deliveries",
           "tableTo": "subscribers",
-          "columnsFrom": [
-            "subscriber_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["subscriber_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -133,12 +125,8 @@
           "name": "refresh_tokens_user_id_users_id_fk",
           "tableFrom": "refresh_tokens",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -148,9 +136,7 @@
         "refresh_tokens_user_id_unique": {
           "name": "refresh_tokens_user_id_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "user_id"
-          ]
+          "columns": ["user_id"]
         }
       },
       "policies": {},
@@ -187,12 +173,8 @@
           "name": "subscribers_webhook_id_webhooks_id_fk",
           "tableFrom": "subscribers",
           "tableTo": "webhooks",
-          "columnsFrom": [
-            "webhook_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["webhook_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -254,12 +236,8 @@
           "name": "tasks_webhook_id_webhooks_id_fk",
           "tableFrom": "tasks",
           "tableTo": "webhooks",
-          "columnsFrom": [
-            "webhook_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["webhook_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -333,16 +311,12 @@
         "users_username_unique": {
           "name": "users_username_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "username"
-          ]
+          "columns": ["username"]
         },
         "users_email_unique": {
           "name": "users_email_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "email"
-          ]
+          "columns": ["email"]
         }
       },
       "policies": {},
@@ -400,12 +374,8 @@
           "name": "webhooks_user_id_users_id_fk",
           "tableFrom": "webhooks",
           "tableTo": "users",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -415,9 +385,7 @@
         "webhooks_source_unique": {
           "name": "webhooks_source_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "source"
-          ]
+          "columns": ["source"]
         }
       },
       "policies": {},
@@ -429,20 +397,12 @@
     "public.task_status": {
       "name": "task_status",
       "schema": "public",
-      "values": [
-        "CREATED",
-        "IN_PROCESS",
-        "FINISHED"
-      ]
+      "values": ["CREATED", "IN_PROCESS", "FINISHED"]
     },
     "public.delivery_status": {
       "name": "delivery_status",
       "schema": "public",
-      "values": [
-        "NOT_DELIVERED",
-        "FAILED",
-        "SUCCESS"
-      ]
+      "values": ["NOT_DELIVERED", "FAILED", "SUCCESS"]
     }
   },
   "schemas": {},
