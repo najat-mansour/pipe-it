@@ -164,7 +164,7 @@ export async function getTodayMatches(): Promise<TodayMatchesResult> {
     },
   });
   const body = await response.json();
-  console.log()
+  console.log();
   const matches = body.response;
   const filteredMatches = matches.filter((match: InputMatchFormat) =>
     importantLeagues.includes(match.league.id),
