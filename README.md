@@ -139,15 +139,15 @@ Requirements: `Docker`.
 ```shell
 git clone https://github.com/najat-mansour/pipe-it.git
 cd pipe-it 
-cp .env.example .env                # Creates .env file                                  
-docker compose up 
+cp .env.example .env                # Create .env file                                  
+docker compose up --build
 ```
 #### Local Development Setup  
-Requirements: `Node.js`, `postgreSQL`, `Docker`.
+Requirements: `Node.js`, `PostgreSQL`, `Docker`.
 ```shell
 git clone https://github.com/najat-mansour/pipe-it.git     
 cd pipe-it  
-cp .env.example .env                # Creates .env file                                  
+cp .env.example .env                # Create .env file                                  
 npm install                         # Install project dependencies
 npm run generate                    # Generate database schema (Drizzle)
 npm run migrate                     # Run database migrations

@@ -1,8 +1,12 @@
 import IORedis from "ioredis";
 import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import { RedisReply, RedisStore } from "rate-limit-redis";
+import { apiConfig } from "../config.js";
 
-const redis = new IORedis();
+const redis = new IORedis({
+  host: apiConfig.redisConfig.host,
+  port: apiConfig.redisConfig.port,
+});
 
 type RateLimiterParams = {
   windowMs: number;
@@ -21,7 +25,7 @@ function createLimiter(rateLimiterParams: RateLimiterParams) {
     message: rateLimiterParams.message,
     standardHeaders: true,
     legacyHeaders: false,
-    skipSuccessfulRequests: false,
+    skipSuccessfulRequests: true,
     keyGenerator: (req) => ipKeyGenerator(req.ip!),
   });
   return rateLimiter;
@@ -29,7 +33,7 @@ function createLimiter(rateLimiterParams: RateLimiterParams) {
 
 export const usersLimiter = createLimiter({
   windowMs: 15 * 60 * 1000, //! 15 minutes
-  max: 5,
+  max: 50,
   message: { message: "Too many requests, try again later after 15 minutes!" },
 });
 
